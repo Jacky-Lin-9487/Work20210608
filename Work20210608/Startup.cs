@@ -10,6 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Work20210608.Data;
+using Work20210608.Interfaces;
+using Work20210608.Services;
+using Work20210608.Repositories;
+using Microsoft.AspNetCore.Http;
+using Work20210608.Wappers;
 
 namespace Work20210608
 {
@@ -27,8 +32,29 @@ namespace Work20210608
         {
             services.AddControllersWithViews();
 
+            #region Session引用 https://ithelp.ithome.com.tw/articles/10194799
+            // 將 Session 存在 ASP.NET Core 記憶體中
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.Name = ".Work20210608.Session";
+                options.IdleTimeout = TimeSpan.FromSeconds(180);
+            });
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ISessionWapper, SessionWapper>();
+            #endregion
+
             services.AddDbContext<Work20210608Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Work20210608Context")));
+
+            services.AddTransient<IRepository, Repository>();
+
+            services.AddTransient<IMemberService, MemberService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +70,17 @@ namespace Work20210608
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            #region Session引用 https://ithelp.ithome.com.tw/articles/10194799
+            // SessionMiddleware 加入 Pipeline
+            app.UseSession();
+            app.Use(async (context, next) =>
+            {
+                context.Session.SetString("SessionKey", "SessoinValue");
+                await next.Invoke();
+            });
+            #endregion
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

@@ -5,21 +5,31 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Work20210608.Interfaces;
 using Work20210608.Models;
+using Work20210608.ViewModel;
+using Work20210608.Wappers;
 
 namespace Work20210608.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ISessionWapper _sessionWapper;
+        private readonly IMemberService _memberService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ISessionWapper sessionWapper, IMemberService memberService)
         {
             _logger = logger;
+            _memberService = memberService;
+            _sessionWapper = sessionWapper;
         }
 
         public IActionResult Index()
         {
+            MemberViewModel MemberVM = _memberService.GetMember(_sessionWapper.MemberId);
+            ViewBag.MemberVM = MemberVM;
+            
             return View();
         }
 

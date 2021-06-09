@@ -14,6 +14,7 @@ namespace Work20210608.Data
         {
         }
 
-        public DbSet<Work20210608.Models.CRUD> CRUD { get; set; }
+        public DbSet<CRUD> CRUD { get; set; }
+        public DbSet<Member> Member { get; set; }
     }
 }

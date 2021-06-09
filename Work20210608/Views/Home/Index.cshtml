@@ -2,7 +2,32 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Message Borad</h1>
+
+<div>
+    @if (ViewBag.MemberVM == null)
+    {<a href="Member/Login">Login</a>}
+    else
+    {
+        <span>@ViewBag.MemberVM.Name</span>
+        <a href="Member/Logout">Logout</a>
+    }
 </div>
+
+<form>
+    <input name="Name" />
+    <input type="submit" value="搜尋" />
+</form>
+
+<div><a href="Message/LeaveAMessage">Leave a Message</a></div>
+
+<table>
+    <tr>
+        <th>編號</th>
+        <th>姓名</th>
+        <th>帳號</th>
+        <th>留言</th>
+        <th>時間</th>
+        <th>功能</th>
+    </tr>
+</table>

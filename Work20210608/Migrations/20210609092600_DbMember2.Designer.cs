@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Work20210608.Data;
 
 namespace Work20210608.Migrations
 {
     [DbContext(typeof(Work20210608Context))]
-    partial class Work20210608ContextModelSnapshot : ModelSnapshot
+    [Migration("20210609092600_DbMember2")]
+    partial class DbMember2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,26 +34,6 @@ namespace Work20210608.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("CRUD");
-                });
-
-            modelBuilder.Entity("Work20210608.Models.Member", b =>
-                {
-                    b.Property<int>("MemberId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("MemberId");
-
-                    b.ToTable("Member");
                 });
 #pragma warning restore 612, 618
         }
