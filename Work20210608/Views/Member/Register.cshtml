@@ -15,10 +15,14 @@
 <h2>Register</h2>
 
 <p class="red">@ViewBag.ErrorMessage</p>
-<form action="Register" method="post">
+<form method="post">
     <label>
         帳號：
-        <input name="Name" required />
+        <input name="Account" required />
+    </label> <br />
+    <label>
+        暱稱：
+        <input name="UserName" required />
     </label> <br />
     <label>
         密碼：
@@ -28,5 +32,5 @@
         確認密碼：
         <input name="checkPassword" type="password" required />
     </label> <br />
-    <input type="submit" />
+    <input type="submit" /> <br />
 </form>

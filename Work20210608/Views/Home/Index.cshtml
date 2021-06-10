@@ -2,6 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 
+@section topCSS {
+    <style>
+        .messageBorad th,
+        .messageBorad td {
+            padding: 10px;
+            border: 1px solid #000;
+        }
+    </style>
+}
+
 <h1>Message Borad</h1>
 
 <div>
@@ -9,25 +19,42 @@
     {<a href="Member/Login">Login</a>}
     else
     {
-        <span>@ViewBag.MemberVM.Name</span>
+        <span>@ViewBag.memberVM.UserName</span>
         <a href="Member/Logout">Logout</a>
     }
 </div>
 
 <form>
-    <input name="Name" />
+    <input name="UserName" />
     <input type="submit" value="搜尋" />
 </form>
 
 <div><a href="Message/LeaveAMessage">Leave a Message</a></div>
 
-<table>
+<table class="messageBorad">
     <tr>
         <th>編號</th>
-        <th>姓名</th>
+        <th>暱稱</th>
         <th>帳號</th>
         <th>留言</th>
         <th>時間</th>
         <th>功能</th>
     </tr>
+    @foreach (var messageVM in ViewBag.messageVMs)
+    {
+        <tr>
+            <td>@messageVM.MessageId</td>
+            <td>@messageVM.UserName</td>
+            <td>@messageVM.Account</td>
+            <td>@messageVM.Content</td>
+            <td>@messageVM.Time</td>
+            <td>
+                @if (ViewBag.memberVM != null && ViewBag.memberVM.MemberId == messageVM.MemberId)
+                {
+                    <input type="button" name="edit" value="編輯" />
+                    <input type="button" name="delete" value="刪除" />
+                }
+            </td>
+        </tr>
+    }
 </table>

@@ -17,18 +17,23 @@ namespace Work20210608.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ISessionWapper _sessionWapper;
         private readonly IMemberService _memberService;
+        private readonly IMessageService _messageService;
 
-        public HomeController(ILogger<HomeController> logger, ISessionWapper sessionWapper, IMemberService memberService)
+        public HomeController(ILogger<HomeController> logger, ISessionWapper sessionWapper, IMemberService memberService, IMessageService messageService)
         {
             _logger = logger;
             _memberService = memberService;
             _sessionWapper = sessionWapper;
+            _messageService = messageService;
         }
 
         public IActionResult Index()
         {
-            MemberViewModel MemberVM = _memberService.GetMember(_sessionWapper.MemberId);
-            ViewBag.MemberVM = MemberVM;
+            MemberViewModel memberVM = _memberService.GetMember(_sessionWapper.MemberId);
+            ViewBag.memberVM = memberVM;
+
+            List<MessageViewModel> messageVMs = _messageService.GetMessages();
+            ViewBag.messageVMs = messageVMs;
             
             return View();
         }

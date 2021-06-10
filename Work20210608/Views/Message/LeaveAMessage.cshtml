@@ -12,19 +12,17 @@
     </style>
 }
 
-<h2>Login</h2>
+<h2>LeaveAMessage</h2>
 
 <p class="red">@ViewBag.ErrorMessage</p>
 <form method="post">
     <label>
-        帳號：
-        <input name="Account" required />
+        暱稱：
+        @ViewBag.memberVM.UserName
     </label> <br />
     <label>
-        密碼：
-        <input name="Password" type="password" required />
+        留言：
+        <input name="Content" required />
     </label> <br />
     <input type="submit" />
 </form>
-
-<div><a href="Register">Register</a></div>

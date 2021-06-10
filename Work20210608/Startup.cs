@@ -50,11 +50,10 @@ namespace Work20210608
             services.AddDbContext<Work20210608Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Work20210608Context")));
 
+            //相依性注入
             services.AddTransient<IRepository, Repository>();
-
             services.AddTransient<IMemberService, MemberService>();
-
-
+            services.AddTransient<IMessageService, MessageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

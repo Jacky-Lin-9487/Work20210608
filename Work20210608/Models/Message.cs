@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Work20210608.Models
 {
-    public class Member
+    public class Message
     {
+        public int MessageId { get; set; }
+        [MaxLength(50)]
         public int MemberId { get; set; }
-        
+        public Member Member { get; set; }
         [MaxLength(50)]
-        public string Account { get; set; }
+        public string Content { get; set; }
         [MaxLength(50)]
-        public string Password { get; set; }
-        [MaxLength(50)]
-        public string UserName { get; set; }
+        public DateTime Time { get; set; }
     }
 }

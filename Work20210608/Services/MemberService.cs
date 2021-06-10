@@ -17,7 +17,7 @@ namespace Work20210608.Services
             _dbRepository = dbrepository;
         }
 
-        public Member memberVMToModel(MemberViewModel memberVM)
+        public Member MemberVMToModel(MemberViewModel memberVM)
         {
             Member member;
 
@@ -25,14 +25,15 @@ namespace Work20210608.Services
             else member = new Member()
             {
                 MemberId = memberVM.MemberId,
-                Name = memberVM.Name,
+                Account = memberVM.Account,
                 Password = memberVM.Password,
+                UserName = memberVM.UserName,
             };
 
             return member;
         }
 
-        public MemberViewModel memberToVM(Member member)
+        public MemberViewModel MemberToVM(Member member)
         {
             MemberViewModel memberVM;
 
@@ -40,8 +41,9 @@ namespace Work20210608.Services
             else memberVM = new MemberViewModel()
             {
                 MemberId = member.MemberId,
-                Name = member.Name,
+                Account = member.Account,
                 Password = member.Password,
+                UserName = member.UserName,
             };
 
             return memberVM;
@@ -51,7 +53,7 @@ namespace Work20210608.Services
         {
             //檢查帳號重複
             Member member = _dbRepository.GetAll<Member>().FirstOrDefault(member =>
-                member.Name == memberVM.Name
+                member.Account == memberVM.Account
             );
             if (member != null)
             {
@@ -59,21 +61,20 @@ namespace Work20210608.Services
                 return;
             }
 
-            member = memberVMToModel(memberVM);
-
+            //建立帳號
+            member = MemberVMToModel(memberVM);
             _dbRepository.Create(member);
-
             memberVM.MemberId = member.MemberId;
         }
 
         public MemberViewModel Login(MemberViewModel memberVM)
         {
             Member member = _dbRepository.GetAll<Member>().FirstOrDefault(member => 
-                member.Name == memberVM.Name
+                member.Account == memberVM.Account
                 && member.Password == memberVM.Password
             );
 
-            memberVM = memberToVM(member);
+            memberVM = MemberToVM(member);
 
             return memberVM;
         }
@@ -84,7 +85,7 @@ namespace Work20210608.Services
                 member.MemberId == MemberId
             );
 
-            MemberViewModel memberVM = memberToVM(member);
+            MemberViewModel memberVM = MemberToVM(member);
 
             return memberVM;
         }

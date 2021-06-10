@@ -34,7 +34,7 @@ namespace Work20210608.Controllers
         [HttpPost]
         public IActionResult Login(MemberViewModel memberVM)
         {
-            if (memberVM.Name == "" || memberVM.Password == "")
+            if (memberVM.Account == "" || memberVM.Password == "")
             {
                 ViewBag.ErrorMessage = "帳號或密碼不可為空";
                 return View();
@@ -60,7 +60,7 @@ namespace Work20210608.Controllers
         [HttpPost]
         public IActionResult Register(MemberViewModel memberVM, IFormCollection formCollection)
         {
-            if(memberVM.Name == "" || memberVM.Password == "")
+            if(memberVM.Account == "" || memberVM.Password == "")
             {
                 ViewBag.ErrorMessage = "帳號或密碼不可為空";
                 return View();
