@@ -29,7 +29,7 @@ namespace Work20210608.Controllers
         public IActionResult LeaveAMessage()
         {
             MemberViewModel memberVM = _memberService.GetMember(_sessionWapper.MemberId);
-            if (memberVM == null) return RedirectToAction("Index", "Home");
+            if (memberVM == null) return RedirectToAction("Login", "Member");
             ViewBag.memberVM = memberVM;
 
             return View();
@@ -48,6 +48,18 @@ namespace Work20210608.Controllers
             _messageService.CreateMessage(messageVM);
 
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult Edit(MessageViewModel messageVM)
+        {
+            //逾時被登出
+            if (_sessionWapper.MemberId < 1) return Json(false);
+
+            messageVM.MemberId = _sessionWapper.MemberId;
+            _messageService.Edit(messageVM);
+            if (messageVM == null) return Json(false);
+
+            return Json(true);
         }
     }
 }

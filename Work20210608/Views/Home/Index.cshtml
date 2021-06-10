@@ -2,12 +2,20 @@
     ViewData["Title"] = "Home Page";
 }
 
+@{
+    List<int> CanEditList = new List<int>();
+}
+
 @section topCSS {
     <style>
         .messageBorad th,
         .messageBorad td {
             padding: 10px;
             border: 1px solid #000;
+        }
+
+        .display-none {
+            display: none;
         }
     </style>
 }
@@ -46,15 +54,63 @@
             <td>@messageVM.MessageId</td>
             <td>@messageVM.UserName</td>
             <td>@messageVM.Account</td>
-            <td>@messageVM.Content</td>
+            <td>
+                <span id="contentSpan_@messageVM.MessageId">@messageVM.Content</span>
+                <input id="contentInput_@messageVM.MessageId" class="display-none" value="@messageVM.Content" />
+            </td>
             <td>@messageVM.Time</td>
             <td>
                 @if (ViewBag.memberVM != null && ViewBag.memberVM.MemberId == messageVM.MemberId)
                 {
-                    <input type="button" name="edit" value="編輯" />
-                    <input type="button" name="delete" value="刪除" />
+                    CanEditList.Add(messageVM.MessageId);
+                    <input id="editButton_@messageVM.MessageId" type="button" value="編輯" />
+                    <input id="completeButton_@messageVM.MessageId" class="display-none" type="button" value="完成" />
+                    <input id="deleteButton_@messageVM.MessageId" type="button" value="刪除" />
                 }
             </td>
         </tr>
     }
 </table>
+
+@section endJS
+{
+    @foreach (int messageId in CanEditList)
+    {
+<script>
+            contentSpan_@messageId = document.getElementById("contentSpan_@messageId");
+            contentInput_@messageId = document.getElementById("contentInput_@messageId");
+            editButton_@messageId = document.getElementById("editButton_@messageId");
+            completeButton_@messageId = document.getElementById("completeButton_@messageId");
+            deleteButton_@messageId = document.getElementById("deleteButton_@messageId");
+
+            editButton_@messageId .addEventListener('click', function () {
+                contentInput_@messageId .value = contentSpan_@messageId .innerText;
+
+                editButton_@messageId .style.display = "none";
+                completeButton_@messageId .style.display = "inline-block";
+                contentSpan_@messageId .style.display = "none";
+                contentInput_@messageId .style.display = "inline-block";
+            });
+
+            completeButton_@messageId .addEventListener('click', function () {
+                completeButton_@messageId .style.display = "none";
+                contentInput_@messageId .style.display = "none";
+
+                axios.post("Message/Edit", { MessageId: @messageId , Content: contentInput_@messageId .value })
+                    .then((res) => {
+                        if (res.data == true) {
+                            contentSpan_@messageId .innerText = contentInput_@messageId .value;
+                            editButton_@messageId .style.display = "inline-block";
+                            contentSpan_@messageId .style.display = "inline";
+                        }
+                        else {
+                            alert("編輯失敗");
+                            editButton_@messageId .style.display = "inline-block";
+                            contentSpan_@messageId .style.display = "inline";
+                        }
+                    })
+            });
+
+</script>
+    }
+}

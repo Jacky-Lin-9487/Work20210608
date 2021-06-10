@@ -40,7 +40,7 @@ namespace Work20210608
             {
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.Name = ".Work20210608.Session";
-                options.IdleTimeout = TimeSpan.FromSeconds(180);
+                options.IdleTimeout = TimeSpan.FromSeconds(1200);
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

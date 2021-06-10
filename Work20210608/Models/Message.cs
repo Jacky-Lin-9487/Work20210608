@@ -12,6 +12,7 @@ namespace Work20210608.Models
         [MaxLength(50)]
         public int MemberId { get; set; }
         public Member Member { get; set; }
+
         [MaxLength(50)]
         public string Content { get; set; }
         [MaxLength(50)]

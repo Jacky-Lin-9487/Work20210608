@@ -16,5 +16,7 @@ namespace Work20210608.Models
         public string Password { get; set; }
         [MaxLength(50)]
         public string UserName { get; set; }
+
+        //public List<Message> Messages { get; set; }
     }
 }

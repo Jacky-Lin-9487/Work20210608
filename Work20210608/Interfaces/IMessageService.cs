@@ -10,5 +10,6 @@ namespace Work20210608.Interfaces
     {
         void CreateMessage(MessageViewModel messageVM);
         List<MessageViewModel> GetMessages();
+        MessageViewModel Edit(MessageViewModel messageVM);
     }
 }

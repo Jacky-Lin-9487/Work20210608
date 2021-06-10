@@ -37,9 +37,6 @@ namespace Work20210608.Services
 
         public MessageViewModel MessageToVM(Message message)
         {
-            //查詢關聯member
-            MemberViewModel memberVM = _memberService.GetMember(message.MemberId);
-
             //轉換VM
             MessageViewModel messageVM;
 
@@ -48,8 +45,8 @@ namespace Work20210608.Services
             {
                 MessageId = message.MessageId,
                 MemberId = message.MemberId,
-                UserName = memberVM.UserName,
-                Account = memberVM.Account,
+                UserName = message.Member.UserName,
+                Account = message.Member.Account,
                 Content = message.Content,
                 Time = message.Time,
             };
@@ -70,6 +67,7 @@ namespace Work20210608.Services
         {
             //抓取所有留言
             List<Message> messages = _dbRepository.GetAll<Message>().ToList();
+            List<Member> members = _dbRepository.GetAll<Member>().ToList();
 
             //Model轉VM
             List<MessageViewModel> messageVMs = new List<MessageViewModel>();
@@ -80,6 +78,24 @@ namespace Work20210608.Services
             }
 
             return messageVMs;
+        }
+
+        public MessageViewModel Edit(MessageViewModel messageVM)
+        {
+            messageVM.Time = DateTime.UtcNow + TimeSpan.FromHours(8);
+
+            Message message = _dbRepository.GetAll<Message>().FirstOrDefault(message => 
+                message.MessageId == messageVM.MessageId &&
+                message.MemberId == messageVM.MemberId
+            );
+            if (message == null) return null;
+
+            message.Content = messageVM.Content;
+            message.Time = messageVM.Time;
+            _dbRepository.Update(message);
+
+            messageVM = MessageToVM(message);
+            return messageVM;
         }
     }
 }
