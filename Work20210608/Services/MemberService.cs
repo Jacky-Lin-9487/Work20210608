@@ -49,16 +49,28 @@ namespace Work20210608.Services
 
         public void Register(MemberViewModel memberVM)
         {
-            Member member = memberVMToModel(memberVM);
+            //檢查帳號重複
+            Member member = _dbRepository.GetAll<Member>().FirstOrDefault(member =>
+                member.Name == memberVM.Name
+            );
+            if (member != null)
+            {
+                memberVM.MemberId = -1;
+                return;
+            }
+
+            member = memberVMToModel(memberVM);
 
             _dbRepository.Create(member);
+
+            memberVM.MemberId = member.MemberId;
         }
 
         public MemberViewModel Login(MemberViewModel memberVM)
         {
             Member member = _dbRepository.GetAll<Member>().FirstOrDefault(member => 
-                member.Name == memberVM.Name &&
-                member.Password == memberVM.Password
+                member.Name == memberVM.Name
+                && member.Password == memberVM.Password
             );
 
             memberVM = memberToVM(member);

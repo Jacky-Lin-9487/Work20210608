@@ -73,8 +73,16 @@ namespace Work20210608.Controllers
             }
             
             _memberService.Register(memberVM);
+            _sessionWapper.MemberId = memberVM.MemberId;
 
-            return RedirectToAction("Login", "Member", new { memberVM = memberVM });
+            if(memberVM.MemberId > 0) return RedirectToAction("Index", "Home");
+            else if (memberVM.MemberId == -1)
+            {
+                ViewBag.ErrorMessage = "帳號不可重複";
+                return View();
+            }
+
+            return View();
         }
 
         public IActionResult Logout()
