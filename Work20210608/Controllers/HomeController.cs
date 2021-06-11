@@ -27,14 +27,20 @@ namespace Work20210608.Controllers
             _messageService = messageService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string UserName = "")
         {
             MemberViewModel memberVM = _memberService.GetMember(_sessionWapper.MemberId);
             ViewBag.memberVM = memberVM;
 
             List<MessageViewModel> messageVMs = _messageService.GetMessages();
+
+            if (String.IsNullOrEmpty(UserName) != true) messageVMs = messageVMs.Where(messageVM => 
+                messageVM.UserName == UserName
+            ).ToList();
+
             ViewBag.messageVMs = messageVMs;
-            
+            ViewBag.UserName = UserName;
+
             return View();
         }
 
