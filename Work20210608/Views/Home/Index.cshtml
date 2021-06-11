@@ -76,7 +76,7 @@
 {
     @foreach (int messageId in CanEditList)
     {
-<script>
+        <script>
             contentSpan_@messageId = document.getElementById("contentSpan_@messageId");
             contentInput_@messageId = document.getElementById("contentInput_@messageId");
             editButton_@messageId = document.getElementById("editButton_@messageId");
@@ -96,7 +96,7 @@
                 completeButton_@messageId .style.display = "none";
                 contentInput_@messageId .style.display = "none";
 
-                axios.post("Message/Edit", { MessageId: @messageId , Content: contentInput_@messageId .value })
+                axios.post("Message/Edit", Qs.stringify({ MessageId: @messageId , Content: contentInput_@messageId .value }))
                     .then((res) => {
                         if (res.data == true) {
                             contentSpan_@messageId .innerText = contentInput_@messageId .value;
@@ -111,6 +111,17 @@
                     })
             });
 
-</script>
+            deleteButton_@messageId .addEventListener('click', function () {
+                axios.post("Message/Delete", Qs.stringify({ MessageId: @messageId }))
+                    .then((res) => {
+                        if (res.data == true) {
+                            location.reload()
+                        }
+                        else {
+                            alert("刪除失敗");
+                        }
+                    })
+            });
+        </script>
     }
 }

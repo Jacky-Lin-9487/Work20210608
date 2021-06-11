@@ -5,6 +5,10 @@
     {
       "library": "axios@0.21.1",
       "destination": "wwwroot/lib/axios/"
+    },
+    {
+      "library": "qs@6.10.1",
+      "destination": "wwwroot/lib/qs/"
     }
   ]
 }

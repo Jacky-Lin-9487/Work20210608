@@ -41,15 +41,20 @@ namespace Work20210608.Services
             MessageViewModel messageVM;
 
             if (message == null) messageVM = null;
-            else messageVM = new MessageViewModel()
+
+            messageVM = new MessageViewModel()
             {
                 MessageId = message.MessageId,
                 MemberId = message.MemberId,
-                UserName = message.Member.UserName,
-                Account = message.Member.Account,
                 Content = message.Content,
                 Time = message.Time,
             };
+
+            if (message.Member != null)
+            {
+                messageVM.UserName = message.Member.UserName;
+                messageVM.Account = message.Member.Account;
+            }
 
             return messageVM;
         }
@@ -71,7 +76,7 @@ namespace Work20210608.Services
 
             //Model轉VM
             List<MessageViewModel> messageVMs = new List<MessageViewModel>();
-            foreach(Message message in messages)
+            foreach (Message message in messages)
             {
                 MessageViewModel messageVM = MessageToVM(message);
                 messageVMs.Add(messageVM);
@@ -84,7 +89,7 @@ namespace Work20210608.Services
         {
             messageVM.Time = DateTime.UtcNow + TimeSpan.FromHours(8);
 
-            Message message = _dbRepository.GetAll<Message>().FirstOrDefault(message => 
+            Message message = _dbRepository.GetAll<Message>().FirstOrDefault(message =>
                 message.MessageId == messageVM.MessageId &&
                 message.MemberId == messageVM.MemberId
             );
@@ -93,6 +98,20 @@ namespace Work20210608.Services
             message.Content = messageVM.Content;
             message.Time = messageVM.Time;
             _dbRepository.Update(message);
+
+            messageVM = MessageToVM(message);
+            return messageVM;
+        }
+
+        public MessageViewModel Delete(MessageViewModel messageVM)
+        {
+            Message message = _dbRepository.GetAll<Message>().FirstOrDefault(message =>
+                message.MessageId == messageVM.MessageId &&
+                message.MemberId == messageVM.MemberId
+            );
+            if (message == null) return null;
+
+            _dbRepository.Delete(message);
 
             messageVM = MessageToVM(message);
             return messageVM;

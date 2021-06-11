@@ -50,13 +50,26 @@ namespace Work20210608.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpPost]
         public IActionResult Edit(MessageViewModel messageVM)
         {
             //逾時被登出
             if (_sessionWapper.MemberId < 1) return Json(false);
 
             messageVM.MemberId = _sessionWapper.MemberId;
-            _messageService.Edit(messageVM);
+            messageVM = _messageService.Edit(messageVM);
+            if (messageVM == null) return Json(false);
+
+            return Json(true);
+        }
+
+        public IActionResult Delete(MessageViewModel messageVM)
+        {
+            //逾時被登出
+            if (_sessionWapper.MemberId < 1) return Json(false);
+
+            messageVM.MemberId = _sessionWapper.MemberId;
+            messageVM = _messageService.Delete(messageVM);
             if (messageVM == null) return Json(false);
 
             return Json(true);
