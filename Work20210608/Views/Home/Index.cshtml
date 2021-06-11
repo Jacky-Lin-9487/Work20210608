@@ -17,6 +17,35 @@
         .display-none {
             display: none;
         }
+
+        .pages-box {
+            display: flex;
+            margin-top: 5px;
+        }
+
+        .page-box {
+            border: 1px solid #000;
+            margin-right: 5px;
+            padding: 2px 5px;
+        }
+
+        .page-box:hover {
+            color: #FC9929;
+            background-color: #000000;
+        }
+
+        .page-box-now {
+            color: #FC9929;
+            background-color: #000000;
+        }
+
+        .pages-box a {
+            text-decoration: none;
+        }
+
+        .pages-box span {
+            margin-right: 5px;
+        }
     </style>
 }
 
@@ -24,20 +53,21 @@
 
 <div>
     @if (ViewBag.MemberVM == null)
-    {<a href="Member/Login">Login</a>}
+    {<a href="~/Member/Login">Login</a>}
     else
     {
         <span>@ViewBag.memberVM.UserName</span>
-        <a href="Member/Logout">Logout</a>
+        <a href="~/Member/Logout">Logout</a>
     }
 </div>
 
 <form>
-    <input name="UserName" value="@ViewBag.UserName" />
+    <input name="userName" value="@ViewBag.userName" />
+    <input class="display-none" name="nowPage" value="@ViewBag.nowPage" />
     <input type="submit" value="搜尋" />
 </form>
 
-<div><a href="Message/LeaveAMessage">Leave a Message</a></div>
+<div><a href="~/Message/LeaveAMessage">Leave a Message</a></div>
 
 <table class="messageBorad">
     <tr>
@@ -58,7 +88,7 @@
                 <span id="contentSpan_@messageVM.MessageId">@messageVM.Content</span>
                 <input id="contentInput_@messageVM.MessageId" class="display-none" value="@messageVM.Content" />
             </td>
-            <td>@messageVM.Time</td>
+            <td id="timeTd_@messageVM.MessageId">@messageVM.Time</td>
             <td>
                 @if (ViewBag.memberVM != null && ViewBag.memberVM.MemberId == messageVM.MemberId)
                 {
@@ -72,6 +102,25 @@
     }
 </table>
 
+<div class="pages-box">
+    <a href="?UserName=@ViewBag.UserName&NowPage=@(Math.Max(ViewBag.NowPage-1, 1))"><div class="page-box">&lt;</div></a>
+    @if (ViewBag.nowPage - 2 > 1)
+    {<a href="?UserName=@ViewBag.UserName&NowPage=1"><div class="page-box">1</div></a>}
+    @if (ViewBag.nowPage - 2 > 2)
+    {<span>...</span>}
+    @for (int i = Math.Max(ViewBag.nowPage - 2, 1); i <= Math.Min(ViewBag.nowPage + 2, ViewBag.totalPage); i++)
+    {
+        <a href="?UserName=@ViewBag.UserName&NowPage=@i"><div class="page-box @(i==ViewBag.nowPage? "page-box-now":"")">@i</div></a>
+    }
+    @if (ViewBag.nowPage + 2 < ViewBag.totalPage - 1)
+    {<span>...</span>}
+    @if (ViewBag.nowPage + 2 < ViewBag.totalPage)
+    {<a href="?UserName=@ViewBag.UserName&NowPage=@ViewBag.totalPage"><div class="page-box">@ViewBag.totalPage</div></a>}
+    <a href="?UserName=@ViewBag.UserName&NowPage=@(Math.Min(ViewBag.NowPage+1, ViewBag.totalPage))"><div class="page-box">&gt;</div></a>
+</div>
+
+
+
 @section endJS
 {
     @foreach (int messageId in CanEditList)
@@ -82,6 +131,7 @@
             editButton_@messageId = document.getElementById("editButton_@messageId");
             completeButton_@messageId = document.getElementById("completeButton_@messageId");
             deleteButton_@messageId = document.getElementById("deleteButton_@messageId");
+            timeTd_@messageId = document.getElementById("timeTd_@messageId");
 
             editButton_@messageId .addEventListener('click', function () {
                 contentInput_@messageId .value = contentSpan_@messageId .innerText;
@@ -100,6 +150,7 @@
                     .then((res) => {
                         if (res.data == true) {
                             contentSpan_@messageId .innerText = contentInput_@messageId .value;
+                            timeTd_@messageId .innerText = TimetoString(new Date());
                             editButton_@messageId .style.display = "inline-block";
                             contentSpan_@messageId .style.display = "inline";
                         }
@@ -124,4 +175,17 @@
             });
         </script>
     }
+
+    <script>
+        function TimetoString(UTCTime) {
+            time = UTCTime;
+            time.setHours(time.getHours() + 8);
+            timeString = time.getUTCFullYear() + "/" + (time.getUTCMonth()+1) + "/" + time.getUTCDate() + " ";
+            if (time.getUTCHours() >= 12) timeString += "下午 " + (time.getUTCHours() - 12).toString().padStart(2, 0);
+            else timeString += "上午 " + time.getUTCHours();
+            timeString += ":" + time.getMinutes().toString().padStart(2, 0) + ":" + time.getSeconds().toString().padStart(2, 0);
+
+            return timeString;
+        }
+    </script>
 }

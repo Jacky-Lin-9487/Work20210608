@@ -27,19 +27,30 @@ namespace Work20210608.Controllers
             _messageService = messageService;
         }
 
-        public IActionResult Index(string UserName = "")
+        public IActionResult Index(string userName = "", int nowPage = 1)
         {
             MemberViewModel memberVM = _memberService.GetMember(_sessionWapper.MemberId);
             ViewBag.memberVM = memberVM;
 
             List<MessageViewModel> messageVMs = _messageService.GetMessages();
 
-            if (String.IsNullOrEmpty(UserName) != true) messageVMs = messageVMs.Where(messageVM => 
-                messageVM.UserName == UserName
+            //依用戶名搜尋
+            if (String.IsNullOrEmpty(userName) != true) messageVMs = messageVMs.Where(messageVM => 
+                messageVM.UserName == userName
             ).ToList();
+            ViewBag.userName = userName;
+
+            //分頁
+            int perPage = 10;
+            int totalPage = (int)Math.Max(Math.Ceiling((double)messageVMs.Count / perPage), 1);
+
+            messageVMs = messageVMs.Skip((nowPage-1)*perPage).Take(perPage).ToList();
+
+            ViewBag.perPage = perPage;
+            ViewBag.totalPage = totalPage;
+            ViewBag.nowPage = nowPage;
 
             ViewBag.messageVMs = messageVMs;
-            ViewBag.UserName = UserName;
 
             return View();
         }

@@ -71,7 +71,7 @@ namespace Work20210608.Services
         public List<MessageViewModel> GetMessages()
         {
             //抓取所有留言
-            List<Message> messages = _dbRepository.GetAll<Message>().ToList();
+            List<Message> messages = _dbRepository.GetAll<Message>().OrderByDescending(message => message.MessageId).ToList();
             List<Member> members = _dbRepository.GetAll<Member>().ToList();
 
             //Model轉VM
